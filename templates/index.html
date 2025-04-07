@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dewdrops</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #0a0a0a;
+            color: #fff;
+        }
+        .category {
+            display: inline-block;
+            padding: 10px;
+            margin: 5px;
+            background: #000000;
+            color: #ffffff;
+            text-decoration: none;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        .selected {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 15px #00ffff;
+        }
+        .note {
+            padding: 10px;
+            margin: 5px 0;
+            background: #1a1a1a;
+            border: 1px solid #00ffff;
+            color: #00ffff;
+            box-shadow: 0 0 5px #00ffff;
+        }
+        input[type="text"] {
+            background: #000;
+            color: #ff00ff;
+            border: 2px solid #ff00ff;
+            padding: 5px;
+            box-shadow: 0 0 10px #00ffff;
+        }
+        button {
+            background: #00ff00;
+            color: #000;
+            border: 2px solid #00ff00;
+            padding: 5px 10px;
+            box-shadow: 0 0 10px #00ffff;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #ff00ff;
+            border-color: #ff00ff;
+            box-shadow: 0 0 15px #00ffff;
+        }
+    </style>
+</head>
+<body>
+    <h1>Dewdrops</h1>
+    <div>
+        {% for cat in categories %}
+            <a href="/dailies/?category={{ cat }}" class="category {% if cat == current_category %}selected{% endif %}">{{ cat }}</a>
+        {% endfor %}
+    </div>
+    <form method="POST" action="/dailies/">
+    <input type="hidden" name="category" value="{{ current_category }}">
+    <input type="text" name="note" placeholder="Add note for {{ current_category }}" required>
+    <button type="submit">Save</button>
+</form>
+    <h2>Notes for {{ current_category }}</h2>
+    {% for note in notes %}
+        <div class="note">
+            <p>{{ note[2] }}: {{ note[3] }}</p>
+        </div>
+    {% endfor %}
+    <a href="/dailies/report">View Report</a>
+</body>
+</html>
