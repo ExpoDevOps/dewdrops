@@ -3,3 +3,5 @@
 .git
 .run
 dailies.db
+_pycache_
+dewdrops.db
