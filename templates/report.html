@@ -4,39 +4,12 @@
     <meta charset="UTF-8">
     <title>Dewdrops Report</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-            background: #0a0a0a;
-            color: #fff;
-        }
-        .category {
-            margin: 20px 0;
-            padding: 15px;
-            background: #1a1a1a;
-            border: 2px solid #00ffff;
-            box-shadow: 0 0 10px #00ffff;
-        }
-        h2 {
-            color: #00ffff;
-            text-shadow: 0 0 5px #ff00ff;
-        }
-        p {
-            color: #ffffff;
-            margin: 5px 0;
-        }
-        a {
-            color: #00ffff;
-            text-decoration: none;
-            border: 2px solid #00ffff;
-            padding: 5px 10px;
-            box-shadow: 0 0 10px #00ffff;
-        }
-        a:hover {
-            background: #ff00ff;
-            color: #000;
-            box-shadow: 0 0 15px #ff00ff;
-        }
+        body { font-family: Arial, sans-serif; padding: 20px; background: #0a0a0a; color: #fff; }
+        .category { margin: 20px 0; padding: 15px; background: #1a1a1a; border: 2px solid #00ffff; box-shadow: 0 0 10px #00ffff; }
+        h2 { color: #00ffff; text-shadow: 0 0 5px #ff00ff; }
+        p { color: #ffffff; margin: 5px 0; }
+        a { color: #00ffff; text-decoration: none; border: 2px solid #00ffff; padding: 5px 10px; box-shadow: 0 0 10px #00ffff; }
+        a:hover { background: #ff00ff; color: #000; box-shadow: 0 0 15px #ff00ff; }
     </style>
 </head>
 <body>
@@ -50,6 +23,6 @@
             <p>Time: {{ task_times[cat]|round(1) }} minutes</p>
         </div>
     {% endfor %}
-    <a href="/dailies/">Back</a>
+    <a href="/dewdrops/">Back</a>
 </body>
 </html>
