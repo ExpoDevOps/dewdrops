@@ -9,15 +9,8 @@
         body {
             margin: 20px;
             font-family: Arial, sans-serif;
-            transition: background 0.3s, color 0.3s;
-        }
-        body.neon-theme {
             background: #111;
             color: #fff;
-        }
-        body.windows-theme {
-            background: #fff;
-            color: #000;
         }
         nav {
             position: fixed;
@@ -77,7 +70,7 @@
             border-radius: 5px;
             background: #111;
             color: #00ccff;
-            transition: background 0.3s;
+            font-size: 1.1em; /* Larger notes for better pop */
         }
         .note[data-category="code"]:hover { background: #ff0000; color: white; }
         .note[data-category="research"]:hover { background: #ff9900; color: white; }
@@ -102,10 +95,12 @@
             border-radius: 3px;
             cursor: pointer;
             text-align: center;
+            text-shadow: 0 0 3px #00ccff;
         }
         .timer button:hover {
             background: #00ccff;
             color: #000;
+            text-shadow: none;
         }
         .report-btn {
             background-color: #007bff;
@@ -113,23 +108,6 @@
         }
         .report-btn:hover {
             background-color: #0056b3;
-        }
-        #theme-toggle {
-            display: block;
-            width: 100%;
-            margin: 10px 0;
-            padding: 5px;
-            background: transparent;
-            border: 1px solid #00ccff;
-            color: #00ccff;
-            border-radius: 3px;
-            cursor: pointer;
-            font-weight: bold;
-            text-align: center;
-        }
-        #theme-toggle:hover {
-            background: #00ccff;
-            color: #000;
         }
         @media (max-width: 600px) {
             nav {
@@ -146,7 +124,7 @@
         }
     </style>
 </head>
-<body class="windows-theme">
+<body>
     <nav>
         <ul>
             <li><a href="/">Home</a></li>
@@ -160,7 +138,6 @@
             <button onclick="resumeTimer()">Resume</button>
             <button onclick="clearTimer()">Clear</button>
         </div>
-        <button id="theme-toggle">Toggle Theme</button>
     </nav>
     <main>
         {% block content %}
@@ -170,110 +147,59 @@
         let timerInterval = null;
         let seconds = parseInt(sessionStorage.getItem('timerSeconds')) || 0;
         let isRunning = sessionStorage.getItem('timerIsRunning') === 'true';
-        let currentTheme = sessionStorage.getItem('theme') || 'windows-theme';
 
         function startTimer() {
-            try {
-                if (!timerInterval) {
-                    timerInterval = setInterval(() => {
-                        seconds++;
-                        sessionStorage.setItem('timerSeconds', seconds);
-                        updateTimerDisplay();
-                    }, 1000);
-                    isRunning = true;
-                    sessionStorage.setItem('timerIsRunning', 'true');
-                }
-            } catch (e) {
-                console.error('Timer start error:', e);
+            if (!timerInterval) {
+                timerInterval = setInterval(() => {
+                    seconds++;
+                    sessionStorage.setItem('timerSeconds', seconds);
+                    updateTimerDisplay();
+                }, 1000);
+                isRunning = true;
+                sessionStorage.setItem('timerIsRunning', 'true');
             }
         }
 
         function pauseTimer() {
-            try {
-                if (timerInterval) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                    isRunning = false;
-                    sessionStorage.setItem('timerIsRunning', 'false');
-                }
-            } catch (e) {
-                console.error('Timer pause error:', e);
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                isRunning = false;
+                sessionStorage.setItem('timerIsRunning', 'false');
             }
         }
 
         function resumeTimer() {
-            try {
-                if (!isRunning) {
-                    startTimer();
-                }
-            } catch (e) {
-                console.error('Timer resume error:', e);
+            if (!isRunning) {
+                startTimer();
             }
         }
 
         function clearTimer() {
-            try {
-                if (timerInterval) {
-                    clearInterval(timerInterval);
-                    timerInterval = null;
-                }
-                seconds = 0;
-                isRunning = false;
-                sessionStorage.setItem('timerSeconds', '0');
-                sessionStorage.setItem('timerIsRunning', 'false');
-                updateTimerDisplay();
-            } catch (e) {
-                console.error('Timer clear error:', e);
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
             }
+            seconds = 0;
+            isRunning = false;
+            sessionStorage.setItem('timerSeconds', '0');
+            sessionStorage.setItem('timerIsRunning', 'false');
+            updateTimerDisplay();
         }
 
         function updateTimerDisplay() {
-            try {
-                let hrs = Math.floor(seconds / 3600);
-                let mins = Math.floor((seconds % 3600) / 60);
-                let secs = seconds % 60;
-                document.getElementById('timer').textContent =
-                    `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-            } catch (e) {
-                console.error('Timer display error:', e);
-            }
+            let hrs = Math.floor(seconds / 3600);
+            let mins = Math.floor((seconds % 3600) / 60);
+            let secs = seconds % 60;
+            document.getElementById('timer').textContent =
+                `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Theme management
-        function setTheme(theme) {
-            try {
-                document.body.classList.remove('neon-theme', 'windows-theme');
-                document.body.classList.add(theme);
-                document.querySelector('main').style.background = 'none';
-                sessionStorage.setItem('theme', theme);
-                currentTheme = theme;
-            } catch (e) {
-                console.error('Theme set error:', e);
-            }
+        // Initialize timer display
+        updateTimerDisplay();
+        if (isRunning) {
+            startTimer();
         }
-
-        // Restore theme and timer state
-        try {
-            setTheme(currentTheme);
-            updateTimerDisplay();
-            if (isRunning) {
-                startTimer();
-            }
-        } catch (e) {
-            console.error('Initialization error:', e);
-        }
-
-        // Theme toggle
-        document.getElementById('theme-toggle').addEventListener('click', () => {
-            setTheme(currentTheme === 'neon-theme' ? 'windows-theme' : 'neon-theme');
-        });
-
-        // Persist theme on category change
-        document.querySelectorAll('.category').forEach(link => {
-            link.addEventListener('click', () => {
-                sessionStorage.setItem('theme', currentTheme);
-            });
-        });
     </script>
 </body>
 </html>
