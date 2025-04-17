@@ -1,21 +1,26 @@
 {% extends "base.html" %}
-
 {% block title %}Dewdrops Report{% endblock %}
-
 {% block content %}
-<h1>Dewdrops Report</h1>
-{% for cat in categories %}
-    <div class="report card mb-3">
-        <div class="card-body">
+<h1>Dewdrops for {{ today_date }}</h1>
+<div class="category-wrapper">
+    {% for cat in categories %}
+        <div class="category-container">
             <h2>{{ cat.capitalize() }}</h2>
-            {% for note in notes if note[1] == cat %}
-                <p>{{ note[2] }}: {{ note[3] }}</p>
+            {% for note in notes if note['category'] == cat %}
+                <div class="note" data-category="{{ note['category'] }}">
+                    <p>{{ note['timestamp'] }}: {{ note['content'] }}</p>
+                </div>
             {% endfor %}
             <p>Time: {{ task_times[cat]|round(1) }} minutes</p>
         </div>
-    </div>
-{% endfor %}
-<div class="mt-3">
-    <a href="/" class="btn btn-primary report-btn">Back</a>
+    {% endfor %}
 </div>
+<a href="/" class="report-btn">Back</a>
+<style>
+    .category-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+</style>
 {% endblock %}

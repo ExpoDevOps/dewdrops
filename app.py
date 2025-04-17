@@ -4,6 +4,7 @@ from datetime import datetime
 import time
 import logging
 from apscheduler.schedulers.background import BackgroundScheduler
+import os
 
 app = Flask(__name__)
 
@@ -13,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 # Categories for notes
 CATEGORIES = ['code', 'research', 'building', 'meeting', 'field', 'social']
-DB_PATH = 'dewdrops.db'  # Update for production if needed
+DB_PATH = os.getenv('DEWDROPS_DB_PATH', 'dewdrops.db')  # Fallback to 'dewdrops.db' for dev
 
 def get_db_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -33,7 +34,7 @@ def init_db():
         ''')
         conn.execute('''
             CREATE TABLE IF NOT EXISTS archives (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY,
                 category TEXT,
                 timestamp TEXT,
                 content TEXT,
@@ -50,8 +51,8 @@ def archive_notes():
         with get_db_connection() as conn:
             today = datetime.now().strftime('%Y-%m-%d')
             conn.execute('''
-                INSERT INTO archives (category, timestamp, content, start_time, archive_date)
-                SELECT category, timestamp, content, start_time, ? FROM notes
+                INSERT INTO archives (id, category, timestamp, content, start_time, archive_date)
+                SELECT id, category, timestamp, content, start_time, ? FROM notes
             ''', (today,))
             conn.execute('DELETE FROM notes')
             conn.commit()
@@ -71,7 +72,7 @@ def generate_daily_report():
             for i in range(len(notes)-1):
                 current_note = notes[i]
                 next_note = notes[i+1]
-                time_diff = next_note['start_time'] - current_note['start_time']
+                time_diff = (next_note['start_time'] - current_note['start_time']) / 60.0
                 task_times[current_note['category']] += time_diff
             report = {
                 'notes': notes,
@@ -131,7 +132,7 @@ def report():
             for i in range(len(notes)-1):
                 current_note = notes[i]
                 next_note = notes[i+1]
-                time_diff = next_note['start_time'] - current_note['start_time']
+                time_diff = (next_note['start_time'] - current_note['start_time']) / 60.0
                 if current_note['category'] in task_times:
                     task_times[current_note['category']] += time_diff
             logger.debug(f"Loaded {len(notes)} total notes for report")
@@ -139,10 +140,12 @@ def report():
         logger.error(f"Database error: {e}")
         notes = []
         task_times = {cat: 0 for cat in CATEGORIES}
+    today_date = datetime.now().strftime('%m/%d/%Y')
     return render_template('report.html',
                            notes=notes,
                            task_times=task_times,
-                           categories=CATEGORIES)
+                           categories=CATEGORIES,
+                           today_date=today_date)
 
 @app.route('/archives')
 def archives():

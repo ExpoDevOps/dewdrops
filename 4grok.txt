@@ -1,0 +1,6 @@
+Coding environment:
+
+PyCharm dual-pipeline setup to custom git repo (git.exposetdesign.com) and github (github.com/ExpoDev/Ops)
+PyCharm has run configurations set up so that a development server is available for web based apps.
+git.exposetdesign.com is hosted with on-site Linux box to LAN only via gitea and nginx; i can ssh or use mouse keyboard and terminal on the linux box.
+

@@ -64,13 +64,25 @@
         .category.selected {
             border: 2px solid #000;
         }
+        .category-container {
+            width: 33%; /* Wider containers */
+            min-height: 300px; /* Taller for uniformity */
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 15px;
+            margin-bottom: 15px;
+            box-sizing: border-box; /* Prevent padding issues */
+        }
         .note {
             padding: 5px;
             margin-bottom: 10px;
             border-radius: 5px;
             background: #111;
             color: #00ccff;
-            font-size: 1.1em; /* Larger notes for better pop */
+            font-size: 1.1em;
+            overflow-wrap: break-word;
+            max-width: 100%;
+            word-break: break-all; /* Stricter wrapping */
         }
         .note[data-category="code"]:hover { background: #ff0000; color: white; }
         .note[data-category="research"]:hover { background: #ff9900; color: white; }
@@ -103,13 +115,21 @@
             text-shadow: none;
         }
         .report-btn {
-            background-color: #007bff;
-            color: white;
+            display: inline-block;
+            padding: 5px 10px;
+            background: transparent;
+            border: 1px solid #00ccff;
+            color: #00ccff;
+            border-radius: 3px;
+            text-decoration: none;
+            text-shadow: 0 0 3px #00ccff;
         }
         .report-btn:hover {
-            background-color: #0056b3;
+            background: #00ccff;
+            color: #000;
+            text-shadow: none;
         }
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             nav {
                 position: static;
                 width: 100%;
@@ -120,6 +140,9 @@
                 margin-left: 0;
                 max-width: 100%;
                 padding: 10px;
+            }
+            .category-container {
+                width: 100%; /* Stack on smaller screens */
             }
         }
     </style>
@@ -195,7 +218,6 @@
                 `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         }
 
-        // Initialize timer display
         updateTimerDisplay();
         if (isRunning) {
             startTimer();

@@ -1,7 +1,5 @@
 {% extends "base.html" %}
-
 {% block title %}Dewdrops Archives{% endblock %}
-
 {% block content %}
 <h1>Dewdrops Archives</h1>
 <div class="mb-3">
@@ -13,18 +11,27 @@
     </select>
 </div>
 {% if selected_date %}
-    {% for cat in categories %}
-        <div class="report card mb-3">
-            <div class="card-body">
+    <div class="category-wrapper">
+        {% for cat in categories %}
+            <div class="category-container">
                 <h2>{{ cat.capitalize() }}</h2>
-                {% for note in notes if note[2] == cat %}
-                    <p>{{ note[3] }}: {{ note[4] }}</p>
+                {% for note in notes if note['category'] == cat %}
+                    <div class="note" data-category="{{ note['category'] }}">
+                        <p>{{ note['timestamp'] }}: {{ note['content'] }}</p>
+                    </div>
                 {% endfor %}
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    </div>
 {% endif %}
 <div class="mt-3">
-    <a href="/" class="btn btn-primary report-btn">Back</a>
+    <a href="/" class="report-btn">Back</a>
 </div>
+<style>
+    .category-wrapper {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+    }
+</style>
 {% endblock %}

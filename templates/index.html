@@ -12,7 +12,6 @@
     <input type="text" name="note_text" placeholder="Add note for {{ current_category }}" required style="background: #111; color: #00ccff; border: 1px solid #00ccff; padding: 5px; border-radius: 3px;">
     <button type="submit" class="save-btn">Save</button>
 </form>
-<h2>Notes for {{ current_category }}</h2>
 {% for note in notes %}
     <div class="note" data-category="{{ note['category'] }}">
         <p>{{ note['timestamp'] }}: {{ note['content'] }}</p>
